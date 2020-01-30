@@ -1,8 +1,14 @@
-version: '2'
+version: "2"
+
+networks:
+  development:
+    external: true
+    name: development
+
 services:
   zk1:
     image: confluentinc/cp-zookeeper:latest
-    ports: 
+    ports:
       - "22181:22181"
     environment:
       ZOOKEEPER_SERVER_ID: 1
@@ -11,7 +17,8 @@ services:
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zk1:22888:23888;zk2:32888:33888;zk3:42888:43888
-
+    networks:
+      - development
   zk2:
     image: confluentinc/cp-zookeeper:latest
     ports:
@@ -23,10 +30,11 @@ services:
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zk1:22888:23888;zk2:32888:33888;zk3:42888:43888
-
+    networks:
+      - development
   zk3:
     image: confluentinc/cp-zookeeper:latest
-    ports: 
+    ports:
       - "42181:42181"
     environment:
       ZOOKEEPER_SERVER_ID: 3
@@ -35,7 +43,8 @@ services:
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zk1:22888:23888;zk2:32888:33888;zk3:42888:43888
-
+    networks:
+      - development
   kafka-1:
     image: confluentinc/cp-kafka:latest
     ports:
@@ -48,7 +57,8 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: ${MY_IP}:22181,${MY_IP}:32181,${MY_IP}:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${MY_IP}:19092
-
+    networks:
+      - development
   kafka-2:
     image: confluentinc/cp-kafka:latest
     ports:
@@ -61,10 +71,11 @@ services:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: ${MY_IP}:22181,${MY_IP}:32181,${MY_IP}:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${MY_IP}:29092
-
+    networks:
+      - development
   kafka-3:
     image: confluentinc/cp-kafka:latest
-    ports: 
+    ports:
       - "39092:39092"
     depends_on:
       - zk1
@@ -74,4 +85,5 @@ services:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: ${MY_IP}:22181,${MY_IP}:32181,${MY_IP}:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${MY_IP}:39092
-      
+    networks:
+      - development

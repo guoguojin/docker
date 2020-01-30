@@ -1,0 +1,21 @@
+version: "3.7"
+
+networks:
+  development:
+    external: true
+    name: development
+
+volumes:
+  redis_data:
+
+services:
+  redis:
+    image: redis:latest
+    hostname: redis
+    command: redis-server --appendonly yes
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+    networks:
+      - development
